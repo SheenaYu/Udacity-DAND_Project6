@@ -75,7 +75,7 @@ toggle between two graphs by clicking different tabs.
 
 [Load graphs in different tabs](http://bl.ocks.org/widged/4561185)
 
-[DashingD3.js Lessions](https://www.dashingd3js.com/lessons/)
+[DashingD3.js Lessons](https://www.dashingd3js.com/lessons/)
 
 [Category Color Generator](http://jnnnnn.github.io/category-colors-constrained.html)
 
