@@ -10,7 +10,7 @@ includes a map that shows the geographic locations and detailed information of t
 from 1970 to 2015. The second tab includes a time series line chart which tells audience about the trend of terrorist 
 attacks by state.
 
-Please click this [link](https://cdn.rawgit.com/SheenaYu/Udacity-DAND_Project6/06370465/index.html) to view the visualization.
+Please click this [link](http://cdn.rawgit.com/SheenaYu/Udacity-DAND_Project6/06370465/index.html) to view the visualization.
  
 ### Design
 
