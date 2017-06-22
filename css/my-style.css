@@ -1,0 +1,95 @@
+
+#a_tab h1 {
+            font-size: 2em;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: bold;
+            position: absolute;
+            left: 230px;               
+        }
+
+#intro {
+        font: italic 0.7em Arial, Helvetica, sans-serif;
+        position: absolute;
+        left: 260px;
+        top: 170px;
+    }
+
+#slider {
+          position: absolute;
+          top: 200px;
+          left: 50%;
+          margin-left: -400px;
+          width: 800px;
+          height: 50px;
+      }
+
+#hint {
+    font: 1.5em Arial, Helvetica, sans-serif;
+    font-weight: bold;
+    position: absolute;
+    top: 260px;
+    left: 500px;
+}
+
+#vis svg {
+    position: absolute;
+    top: 300px;
+}
+
+.d3-tip {
+    width: 250px;
+    line-height: 1;
+    font-size: 11px;
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 12px;
+    background: #E9E6BC;
+    color: black;
+    border-radius: 2px;
+}
+
+#ref {
+    font: 0.8em Arial, Helvetica, sans-serif;
+    position: absolute;
+    left: 220px;
+    top: 900px;
+}
+
+
+#b_tab bcontent {
+          font: 10px sans-serif;
+        }
+
+#b_tab h1 {
+            font-size: 2em;
+            font-family: Arial, Helvetica, sans-serif;
+            font-weight: bold;
+            position: absolute;
+            left: 230px;   
+}
+
+.line {
+  fill: none;
+  stroke-width: 1.5px;
+}
+
+.legend-box {
+  cursor: pointer;  
+}
+
+#mouse-tracker {
+  stroke: #E6E7E8;
+  stroke-width: 1px;
+}
+
+.hover-line { 
+  stroke: #E6E7E8;
+  fill: none;
+  stroke-width: 1px;
+  left: 10px;
+  shape-rendering: crispEdges;
+  opacity: 1e-6;
+}
+
+.ts-tooltip {
+  font-weight: normal;
+}

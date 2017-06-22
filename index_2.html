@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+
+        <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+        <script src="http://labratrevenge.com/d3-tip/javascripts/d3.tip.v0.6.3.js"></script>
+        <script src="chroniton.js"></script>
+        <link href="chroniton.css" rel="stylesheet">
+        
+
+        <style type="text/css">
+        body {
+          font: 10px sans-serif;
+        }
+        .line {
+          fill: none;
+          stroke-width: 1.5px;
+        }
+
+        .legend-box {
+          cursor: pointer;  
+        }
+
+        #mouse-tracker {
+          stroke: #E6E7E8;
+          stroke-width: 1px;
+        }
+
+        .hover-line { 
+          stroke: #E6E7E8;
+          fill: none;
+          stroke-width: 1px;
+          left: 10px;
+          shape-rendering: crispEdges;
+          opacity: 1e-6;
+        }
+
+        .hover-text {
+          stroke: none;
+          font-size: 30px;
+          font-weight: bold;
+          fill: #000000;
+        }
+
+        .tooltip {
+          font-weight: normal;
+        }
+
+
+        </style>
+    </head>
+
+    <body>
+
+        <script type="text/javascript">
+
+        var checkData;
+        
+      // var margin = {top: 50, right: 150, bottom: 30, left: 60},
+      //     width  = 1100 - margin.left - margin.right,
+      //     height = 700  - margin.top  - margin.bottom;
+
+     var margin = {top: 20, right: 200, bottom: 20, left: 50},
+          width = 960 - margin.left - margin.right,
+          height = 530 - margin.top - margin.bottom;
+
+      var parseYear = d3.time.format("%Y").parse,
+          formatYear = d3.time.format("%Y");
+
+      var bisectYear = d3.bisector(function(d) { return d.year; }).left;
+
+      var x = d3.time.scale()
+          .range([0, width]);
+
+      var y = d3.scale.linear()
+          .range([height, 0]);
+
+      var color = d3.scale.ordinal()
+               .range(["#3957ff", "#d3fe14", "#c9080a", "#fec7f8", "#0b7b3e", "#0bf0e9", "#c203c8", "#fd9b39", "#888593", "#906407", "#98ba7f", "#fe6794", "#10b0ff", "#ac7bff", "#fee7c0", "#964c63", "#1da49c", "#0ad811", "#bbd9fd", "#fe6cfe", "#297192", "#d1a09c", "#78579e", "#81ffad", "#739400", "#ca6949", "#d9bf01", "#646a58", "#d5097e", "#bb73a9", "#ccf6e9", "#9cb4b6", "#b6a7d4", "#9e8c62", "#6e83c8", "#01af64", "#a71afd", "#cfe589", "#d4ccd1", "#fd4109", "#bf8f0e", "#2f786e", "#4ed1a5", "#d8bb7d", "#a54509", "#6a9276", "#a4777a", "#fc12c9", "#606f15", "#3cc4d9", "#f31c4e"])
+
+      var xAxis = d3.svg.axis()
+          .scale(x)
+          .orient("bottom");
+
+
+      var yAxis = d3.svg.axis()
+          .scale(y)
+          .orient("left");
+
+      var line = d3.svg.line()
+          .interpolate("monotone")
+          .x(function (d) { return x(d.year); })
+          .y(function (d) { return y(d.numberOfAttacks); });
+
+      var maxY; // Defined later to update yAxis
+
+      var svg = d3.select("body").append("svg")
+          .attr("width",  width  + margin.left + margin.right)
+          .attr("height", height + margin.top  + margin.bottom)
+        .append("g")
+          .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+      // Create invisible rect for mouse tracking
+      svg.append("rect")
+          .attr("width", width)
+          .attr("height", height)                                    
+          .attr("x", 0) 
+          .attr("y", 0)
+          .attr("id", "mouse-tracker")
+          .style("fill", "white");
+
+
+
+      d3.csv("data/time_series_by_state.csv", function (error, data) {
+
+        var varNames = d3.keys(data[0]).filter(function (key) { return key !== 'year';});
+        color.domain(varNames);
+
+
+        data.forEach(function(d) {
+          d.year = parseYear(d.year);
+        })
+
+
+
+        var seriesData = varNames.map(function (name) {
+          return {
+            name: name,
+            values: data.map(function (d) {
+              return {
+                year: d.year, 
+                numberOfAttacks: +(d[name]),
+              };
+            }),
+            visible: (name === "California" ? true : false)
+          };
+        });
+
+        checkData = seriesData;
+
+        x.domain(d3.extent(data, function(d) { return d.year; }));
+
+        y.domain([0,
+          d3.max(seriesData, function (c) { 
+            return d3.max(c.values, function (d) { return d.numberOfAttacks; });
+          })]
+        );
+
+        // Draw line graph
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", "translate(0," + (height) + ")")
+            .call(xAxis)
+            .selectAll("text")  
+              .style("text-anchor", "middle")
+              .style("font-size", "10px")
+              .style("font-family", "sans-serif")
+              .attr("dx", "-.2em")
+              .attr("dy", "1em");
+              //.attr("transform", "rotate(-65)");
+
+        
+        svg.append("g")
+            .attr("class", "y axis")
+            .call(yAxis)
+          .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", -50)
+            .attr("x", -230)
+            .attr("dy", ".71em")
+            .style("text-anchor", "end")
+            .text("Number of Terrorist Attacks");
+
+        // Draw grid lines
+        svg.append("g")         
+          .attr("class", "grid")
+          .attr("transform", "translate(0," + height + ")")
+          .call(xAxis
+              .tickSize(-height, 0, 0)
+              .tickFormat("")
+          )
+
+
+
+
+        var series = svg.selectAll(".series")
+            .data(seriesData)
+          .enter().append("g")
+            .attr("class", "series");
+
+        series.append("path")
+          .attr("class", "line")
+          .attr("id", function(d) {
+            return "line-" + d.name;
+          })
+          .attr("d", function (d) { 
+            return d.visible ? line(d.values) : null; 
+          })
+          .style("stroke", function (d) { 
+            return color(d.name); 
+          });
+      
+
+
+      // draw legend
+      var legendSpace = 500 / 51;     
+
+      series.append("rect")
+          .attr("width", 7)
+          .attr("height", 7)                                    
+          .attr("x", width + (margin.right/3)) 
+          .attr("y", function (d, i) { return (legendSpace)+i*(legendSpace) - 8; })  // spacing
+          .attr("fill",function(d) {
+            return d.visible ? color(d.name) : "#F1F1F2"; // If array key "visible" = true then color rect, if not then make it grey 
+          })
+          .attr("class", "legend-box")
+
+          .on("click", function(d){ // On click make d.visible 
+            d.visible = !d.visible; // If array key for this data selection is "visible" = true then make it false, if false then make it true
+
+            maxY = findMaxY(seriesData); // Find max Y rating value categories data with "visible"; true
+            y.domain([0,maxY]); // Redefine yAxis domain based on highest y value of categories data with "visible"; true
+            svg.select(".y.axis")
+              .transition()
+              .call(yAxis);   
+
+            series.select("path")
+              .transition()
+              .attr("d", function(d){
+                return d.visible ? line(d.values) : null; // If d.visible is true then draw line for this d selection
+              })
+
+            series.select("rect")
+              .transition()
+              .attr("fill", function(d) {
+              return d.visible ? color(d.name) : "#F1F1F2";
+            });
+          })
+
+          .on("mouseover", function(d){
+
+          d3.select(this)
+            .transition()
+            .attr("fill", function(d) { return color(d.name); });
+
+          d3.select("#line-" + d.name)
+            .transition()
+            .style("stroke-width", 2.5);  
+        })
+
+         .on("mouseout", function(d){
+
+          d3.select(this)
+            .transition()
+            .attr("fill", function(d) {
+            return d.visible ? color(d.name) : "#F1F1F2";});
+
+          d3.select("#line-" + d.name)
+            .transition()
+            .style("stroke-width", 1.5);
+        })
+
+        series.append("text")
+            .attr("x", width + (margin.right/3) + 15) 
+            .attr("y", function (d, i) { return (legendSpace)+i*(legendSpace); })  // (return (11.25/2 =) 5.625) + i * (5.625) 
+            .text(function(d) { return d.name; }); 
+
+
+          // Hover line 
+          var hoverLineGroup = svg.append("g") 
+                    .attr("class", "hover-line");
+
+          var hoverLine = hoverLineGroup // Create line with basic attributes
+                .append("line")
+                    .attr("id", "hover-line")
+                    .attr("x1", 10).attr("x2", 10) 
+                    .attr("y1", 0).attr("y2", height + 10)
+                    .style("pointer-events", "none") // Stop line interferring with cursor
+                    .style("opacity", 1e-6); // Set opacity to zero 
+
+          // var hoverDate = hoverLineGroup
+          //       .append('text')
+          //           .attr("class", "hover-text")
+          //           .attr("y", height - (height-40)) // hover date text position
+          //           .attr("x", width - 150) // hover date text position
+          //           .style("fill", "#E6E7E8");
+
+          var columnNames = d3.keys(data[0]) //grab the key values from your first data row
+                                             //these are the same as your column names
+                          .slice(1); //remove the first column name (`date`);
+
+          var focus = series.select("g") // create group elements to house tooltip text
+              .data(columnNames) // bind each column name date to each g element
+            .enter().append("g") //create one <g> for each columnName
+              .attr("class", "focus"); 
+
+          focus.append("text") // http://stackoverflow.com/questions/22064083/d3-js-multi-series-chart-with-y-value-tracking
+                .attr("class", "tooltip")
+                .attr("x", width + 20) // position tooltips  
+                .attr("y", function (d, i) { return (legendSpace)+i*(legendSpace); }); // (return (11.25/2 =) 5.625) + i * (5.625) // position tooltips       
+
+// Add mouseover events for hover line.
+  d3.select("#mouse-tracker") // select chart plot background rect #mouse-tracker
+  .on("mousemove", mousemove) // on mousemove activate mousemove function defined below
+  .on("mouseout", function() {
+      // hoverDate
+      //     .text(null) // on mouseout remove text for hover date
+
+      d3.select("#hover-line")
+          .style("opacity", 1e-6); // On mouse out making line invisible
+  });
+
+  function mousemove() { 
+      var mouse_x = d3.mouse(this)[0]; // Finding mouse x position on rect
+      var graph_x = x.invert(mouse_x); // 
+
+      //var mouse_y = d3.mouse(this)[1]; // Finding mouse y position on rect
+      //var graph_y = yScale.invert(mouse_y);
+      //console.log(graph_x);
+      
+      var format = d3.time.format('%b %Y'); // Format hover date text to show three letter month and full year
+      
+      //hoverDate.text(format(graph_x)); // scale mouse position to xScale date and format it to show month and year
+      
+      d3.select("#hover-line") // select hover-line and changing attributes to mouse position
+          .attr("x1", mouse_x) 
+          .attr("x2", mouse_x)
+          .style("opacity", 1); // Making line visible
+
+      // Legend tooltips // http://www.d3noob.org/2014/07/my-favourite-tooltip-method-for-line.html
+
+var x0 = x.invert(d3.mouse(this)[0]), /* d3.mouse(this)[0] returns the x position on the screen of the mouse. xScale.invert function is reversing the process that we use to map the domain (date) to range (position on screen). So it takes the position on the screen and converts it into an equivalent date! */
+      i = bisectYear(data, x0, 1), // use our bisectDate function that we declared earlier to find the index of our data array that is close to the mouse cursor
+      /*It takes our data array and the date corresponding to the position of or mouse cursor and returns the index number of the data array which has a date that is higher than the cursor position.*/
+      d0 = data[i - 1],
+      d1 = data[i],
+      /*d0 is the combination of date and rating that is in the data array at the index to the left of the cursor and d1 is the combination of date and close that is in the data array at the index to the right of the cursor. In other words we now have two variables that know the value and date above and below the date that corresponds to the position of the cursor.*/
+      d = x0 - d0.year > d1.year - x0 ? d1 : d0;
+      /*The final line in this segment declares a new array d that is represents the date and close combination that is closest to the cursor. It is using the magic JavaScript short hand for an if statement that is essentially saying if the distance between the mouse cursor and the date and close combination on the left is greater than the distance between the mouse cursor and the date and close combination on the right then d is an array of the date and close on the right of the cursor (d1). Otherwise d is an array of the date and close on the left of the cursor (d0).*/
+
+      //d is now the data row for the date closest to the mouse position
+
+      focus.select("text").text(function(columnName){
+         //because you didn't explictly set any data on the <text>
+         //elements, each one inherits the data from the focus <g>
+
+         return (formatYear(d.year) + ": " + d[columnName]);
+      });
+  }; 
+
+        });
+
+  function findMaxY(data){  // Define function "findMaxY"
+    var maxYValues = data.map(function(d) { 
+      if (d.visible){
+        return d3.max(d.values, function(value) { // Return max rating value
+          return value.numberOfAttacks; })
+      }
+    });
+    return d3.max(maxYValues);
+  }
+        </script>
+    </body>
+</html>
