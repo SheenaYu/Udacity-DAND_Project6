@@ -32,8 +32,8 @@ d3.select("acontent").append("p")
 
 d3.select("acontent").append("div")
     .attr("id", "vis")
-    .style('position','absolute')
-    .style("top", "-10px")
+    .style("position","absolute")
+    .style("top", "260px")
     .style("left","100px");
 
 d3.select("acontent")
