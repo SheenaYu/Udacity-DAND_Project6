@@ -10,6 +10,12 @@ includes a map that shows the geographic locations and detailed information of t
 from 1970 to 2015. The second tab includes a time series line chart which tells audience about the trend of terrorist 
 attacks by state.
 
+**Main findings:** 
+
+1. Terrorist attacks were concentrated in coastal states, especially in California and New York.
+
+2. Terrorist attacks decreased drastically after 1970s. However, the most severe attacks happened in New York on Sep. 11th, 2001.
+
 Please click this [link](http://cdn.rawgit.com/SheenaYu/Udacity-DAND_Project6/06370465/index.html) to view the visualization.
  
 ### Design
@@ -62,10 +68,18 @@ and western coast. After 2001, there is a big decrease in terrorist attacks in U
 to fight terrorism. The time series chart aggregates the data by state. The new insights I get is that California and New York 
 are big targets of terrorism, but in recent years there is fewer terrorist activities in the US. 
 
+##### Interview #4
+
+> A few suggestions on how to make it more explanatory: Summarize the story in one or more sentences. That can be done in the title, for example, or in a short introduction that gives the reader some context to what she/he should be looking for in the visualization. Highlight or draw attention to the parts of the visualization that reinforce the story.
+Use the initial animation you've already coded to lead the user to the main point you want to convey, a structure known as a martini glass structure visualization.
+
+
 ##### Post-feedback Design
 
 I redesigned the visualization and combined the animated map and time series line chart in two different tabs. Audience can 
 toggle between two graphs by clicking different tabs. 
+
+I also summarized the findings in the titles of charts, and added tooltips to better guide viewers through the visualization.
 
 ### Resources
 
