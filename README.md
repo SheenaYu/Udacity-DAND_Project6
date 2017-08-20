@@ -16,7 +16,7 @@ attacks by state.
 
 2. Terrorist attacks decreased drastically after 1970s. However, the most severe attacks happened in New York on Sep. 11th, 2001.
 
-Please click this [link](http://cdn.rawgit.com/SheenaYu/Udacity-DAND_Project6/06370465/index.html) to view the visualization.
+Please click this [link](http://cdn.rawgit.com/SheenaYu/Udacity-DAND_Project6/dba64a3f/index.html) to view the visualization.
  
 ### Design
 
