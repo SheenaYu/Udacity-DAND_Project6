@@ -164,8 +164,8 @@ d3.json("data/us-states.json", function (error, json) {
             d.year = +d.year;
             d.longitude = +d.longitude;
             // Add jitter to avoid overplot in D3
-            d.latitude = +d.latitude + Math.random();
-            d.longitude = +d.longitude + Math.random()*0.5;
+            d.latitude = +d.latitude; //+ Math.random();
+            d.longitude = +d.longitude; //+ Math.random()*0.5;
             d.fatalities = +d.fatalities;
             d.injuries = +d.injuries;
             d.totalVictims = d.fatalities + d.injuries; // The new "total victims" column
